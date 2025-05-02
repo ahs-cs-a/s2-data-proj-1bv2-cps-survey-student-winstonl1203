@@ -5,7 +5,7 @@ import java.io.File;
 public class ReadData{
     //I hard-coded the number of rows and columns so 
     //I could use a 2D array
-    private double[][] data = new double[...][...];
+    private double[][] data = new double[29108][14];
 
     //This should read in the csv file and store the data in a 2D array,
     //data -- don't forget to skip the header line and parse everything
@@ -18,11 +18,13 @@ public class ReadData{
             while(scanner.hasNextLine()){
                 String line = scanner.nextLine();
                 String[] lineArr = line.split(",");
-                ...
+                for (int col = 0; col < lineArr.length; col++) {
+                    data[row][col] = Double.parseDouble(lineArr[col]);
+                }
                 row++;
             }
             scanner.close();
-    
+
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -35,8 +37,15 @@ public class ReadData{
     //this should return a double array of the column
     //of data
     public double[][] getColumns(int col1, int col2){
-        double[][] columns = ...
-        ...
+        double[][] columns = new double[data.length][2];
+        for(int i = 0; i < columns.length; i++){
+            for(int j = 0; j < 2; j++){
+                if(j == 0)
+                    columns[i][j] = data[i][col1];
+                if(j == 1)
+                    columns[i][j] = data[i][col2];
+            }
+        }
         return columns;
     }
 
@@ -51,19 +60,32 @@ public class ReadData{
     //return an array with two values -- standard deviation 
     //for the x column and y column
     public double[] stdDeviation(double[][] xy){
-        double sum = 0;
-        double[] mean = ...
-        ...
-        return .. //sample variance!
+        int n = xy.length;
+        double[] mean = mean(xy); 
+        double varianceX = 0, varianceY = 0;
+        for (int i = 0; i < n; i++) {
+            varianceX += Math.pow(xy[i][0] - mean[0], 2); // x column
+            varianceY += Math.pow(xy[i][1] - mean[1], 2); // y column
+        }
+        varianceX /= (n - 1);
+        varianceY /= (n - 1);
+        return new double[] { Math.sqrt(varianceX), Math.sqrt(varianceY) };
     }
     
     //this returns the mean of each columns of data passed in
     //the mean is the sum of the values divided by the number 
     //of values
     public double[] mean(double[][] xy){
-        double sum = 0;
-        ...
-        return ...;
+        double sum1 = 0;
+        double sum2 = 0;
+        double[] meanarray = new double[2];
+        for(int i = 0; i < xy.length; i++){
+            sum1 += xy[i][0];
+            sum2 += xy[i][1];
+        }
+        meanarray[0] = sum1/(xy.length*1.0);
+        meanarray[1] = sum2/(xy.length*1.0);
+        return meanarray;
     }
 
     //this returns the values of each column in standard units
